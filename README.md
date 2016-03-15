@@ -23,14 +23,14 @@ resource://My.BaaPage/Private/Templates/NodeTypes/Chapter.html
 
 In the above example, the follwing templates are used for each site:
 
-My.Globals
+My.Globals:
 *resource://My.**Globals**/Private/Templates/NodeTypes/Chapter.html*
 
-My.BaaPage
+My.BaaPage:
 *resource://My.**Globals**/Private/Templates/NodeTypes/Chapter.html*
  
- My.FooTest
-    *resource://My.**FooTest**/Private/Templates/NodeTypes/Chapter.html*
+ My.FooTest:
+*resource://My.**FooTest**/Private/Templates/NodeTypes/Chapter.html*
 
 
 
