@@ -8,6 +8,7 @@ Create fallback templates to defined sites/packages.
 
 **create:**
 resource://My.Globals/Private/Templates/NodeTypes/Chapter.html
+  and
 resource://My.FooTest/Private/Templates/NodeTypes/Chapter.html  
 
 **but don't create:**
