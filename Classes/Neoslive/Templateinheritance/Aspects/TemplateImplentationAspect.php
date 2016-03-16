@@ -2,12 +2,14 @@
 namespace Neoslive\Templateinheritance\Aspects;
 
 use TYPO3\Flow\Annotations as Flow;
-
+use TYPO3\Neos\Domain\Repository\DomainRepository;
+use TYPO3\Neos\Domain\Repository\SiteRepository;
 
 /**
  * @Flow\Aspect
  */
-class TemplateImplentationAspect {
+class TemplateImplentationAspect
+{
 
     /**
      *    ==========================================================
@@ -33,15 +35,29 @@ class TemplateImplentationAspect {
 
 
     /**
+     * @Flow\Inject
+     * @var DomainRepository
+     */
+    protected $domainRepository;
+
+
+    /**
+     * @Flow\Inject
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+
+    /**
      * Inject the settings
      *
      * @param array $settings
      * @return void
      */
-    public function injectSettings(array $settings) {
+    public function injectSettings(array $settings)
+    {
         $this->settings = $settings;
     }
-
 
 
     /**
@@ -51,25 +67,41 @@ class TemplateImplentationAspect {
      * @Flow\Around("method(TYPO3\TypoScript\TypoScriptObjects\TemplateImplementation->getTemplatePath())")
      * @return string
      */
-    public function getTemplatePath($joinPoint) {
+    public function getTemplatePath($joinPoint)
+    {
 
 
+        $currentDomain = $this->domainRepository->findOneByActiveRequest();
+
+
+        if ($currentDomain !== null) {
+            $currentSite = $currentDomain->getSite();
+        } else {
+            $currentSite = $this->siteRepository->findFirstOnline();
+        }
 
         $result = $joinPoint->getAdviceChain()->proceed($joinPoint);
 
         if (!isset($this->settings['Packages']) || !is_array($this->settings['Packages'])) return $result;
 
-        if (is_file($result)) return $result;
-
         $packages = $this->settings['Packages'];
 
-        $split = explode("/",$result);
+        $split = explode("/", $result);
 
-        foreach ($packages as $key => $val) {
-            if ($val) {
-                $split[2] = $key;
-                $newresult = implode("/", $split);
-                if (is_file($newresult)) return $newresult;
+        foreach ($this->settings['Packages'] as $packageKey => $templatePackages) {
+
+            if ($packageKey === "*" | $packageKey == $currentSite->getSiteResourcesPackageKey()) {
+
+                foreach ($templatePackages as $key => $val) {
+
+                    if ($val) {
+                        $split[2] = $key;
+                        $newresult = implode("/", $split);
+                        if (is_file($newresult)) return $newresult;
+                    }
+
+                }
+
             }
         }
 
@@ -78,7 +110,6 @@ class TemplateImplentationAspect {
 
 
     }
-
 
 
 }
