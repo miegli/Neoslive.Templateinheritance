@@ -18,10 +18,11 @@ resource://My.BaaPage/Private/Templates/NodeTypes/Chapter.html
 
     Neoslive:
       Templateinheritance:
-        'My.Globals':
-          'My.Globals': TRUE
-        'My.BaaPage':
-          'My.Globals': TRUE
+        Packages:
+          'My.Globals':
+            'My.Globals': TRUE
+          'My.BaaPage':
+            'My.Globals': TRUE
 
 In the above example, the follwing templates are used for each site:
 
